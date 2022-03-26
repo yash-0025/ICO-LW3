@@ -4,10 +4,11 @@ pragma solidity ^0.8.10;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./ICryptoDevs";
+import "./ICryptoDevs.sol";
 
 contract CryptoDevToken is ERC20 , Ownable {
     uint256 public constant tokenPrice = 0.01 ether;
+    uint256 public constant tokensPerNFT = 10 * 10**18;
     uint256 public constant maxTotalSupply = 10000 * 10**18;
     ICryptoDevs CryptoDevsNFT;
     mapping(uint256 => bool) public tokenIdsClaimed;
@@ -17,7 +18,7 @@ contract CryptoDevToken is ERC20 , Ownable {
     }
     function mint(uint256 amount) public payable {
         uint256 _requiredAmount = tokenPrice * amount;
-        require(msg.value >= requiredAmount, "Ether sent is incorrect");
+        require(msg.value >= _requiredAmount, "Ether sent is incorrect");
         uint256 amountWithDecimals = amount * 10**18;
         require(
             (totalSupply() + amountWithDecimals) <= maxTotalSupply,
@@ -39,7 +40,7 @@ contract CryptoDevToken is ERC20 , Ownable {
             }
         }
         require(amount > 0,"You have already claimed all the tokens");
-        _mint(msg.sender,amount * tokensPerNFT);
+        _mint(msg.sender, amount * tokensPerNFT);
     }
 
         receive() external payable {}
